@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>herdr Fleet Status</title>
+<style>
+  body { background: #2d2d2d; color: #d8d8d8; font-family: "Segoe UI", sans-serif; font-size: 12px; margin: 0; padding: 8px; }
+  .row { margin-bottom: 10px; }
+  label { display: block; margin-bottom: 3px; color: #a0a0a0; }
+  select, input, textarea { width: 100%; box-sizing: border-box; background: #4d4d4d; color: #f0f0f0; border: 1px solid #5a5a5a; border-radius: 4px; padding: 5px; font-size: 12px; }
+  textarea { height: 190px; font-family: Consolas, monospace; }
+  button { background: #157efb; color: #fff; border: 0; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 12px; }
+  details { margin-top: 8px; }
+  summary { cursor: pointer; color: #a0a0a0; margin-bottom: 6px; }
+  #profileHint { margin-left: 8px; }
+</style>
+<script src="pi-common.js"></script>
+<script src="pi-profiles.js"></script>
+</head>
+<body>
+  <div class="row">
+    <label>herdr target (connection profile)</label>
+    <select id="profile"></select>
+  </div>
+  <div class="row">
+    <label>Poll interval (seconds, 5-3600)</label>
+    <input id="pollInterval" type="number" min="5" max="3600" step="1" />
+  </div>
+  <details>
+    <summary>Connection profiles (shared by all herdr keys)</summary>
+    <div class="row">
+      <textarea id="profilesJson" spellcheck="false"></textarea>
+    </div>
+    <button id="applyProfiles">Apply profiles</button><span id="profileHint"></span>
+    <p style="color:#a0a0a0; line-height:1.5">
+      kind: local | wsl (+distro) | machine (+machine label from <code>herdr machine list --json</code>) |
+      docker (+container) | ssh (+sshHost) | ssh-docker (+sshHost +container) | custom (+prefix).
+      Optional per profile: herdrBin, timeoutMs.
+    </p>
+  </details>
+<script>
+  window.$PI && HerdrPI.init({
+    pollInterval: { id: "pollInterval", transform: function (v) { return v === "" ? undefined : Number(v); } },
+  });
+</script>
+</body>
+</html>

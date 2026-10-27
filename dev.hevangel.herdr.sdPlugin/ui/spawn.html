@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>herdr Spawn Agent</title>
+<style>
+  body { background: #2d2d2d; color: #d8d8d8; font-family: "Segoe UI", sans-serif; font-size: 12px; margin: 0; padding: 8px; }
+  .row { margin-bottom: 10px; }
+  label { display: block; margin-bottom: 3px; color: #a0a0a0; }
+  select, input, textarea { width: 100%; box-sizing: border-box; background: #4d4d4d; color: #f0f0f0; border: 1px solid #5a5a5a; border-radius: 4px; padding: 5px; font-size: 12px; }
+  button { background: #157efb; color: #fff; border: 0; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 12px; }
+  details { margin-top: 8px; }
+  summary { cursor: pointer; color: #a0a0a0; margin-bottom: 6px; }
+  #profileHint { margin-left: 8px; }
+  code { color: #7ee2a8; }
+</style>
+<script src="pi-common.js"></script>
+<script src="pi-profiles.js"></script>
+</head>
+<body>
+  <div class="row">
+    <label>herdr target (connection profile)</label>
+    <select id="profile"></select>
+  </div>
+  <div class="row">
+    <label>Agent kind (installed in the target herdr)</label>
+    <select id="kind"></select>
+  </div>
+  <div class="row">
+    <label>Agent name (empty = auto <code>kind-n</code>; rule: [a-z][a-z0-9_-]{0,31})</label>
+    <input id="newAgentName" type="text" placeholder="reviewer" />
+  </div>
+  <div class="row">
+    <label>Split direction</label>
+    <select id="direction">
+      <option value="right">right (for wide panes)</option>
+      <option value="down">down (for tall panes)</option>
+    </select>
+  </div>
+  <div class="row">
+    <label>Pane to split (empty = the pane focused in the herdr TUI)</label>
+    <input id="paneId" type="text" placeholder="w1:p1" />
+  </div>
+  <div class="row">
+    <label>Agent start timeout (ms; remotes/containers may need more)</label>
+    <input id="spawnTimeoutMs" type="number" min="5000" step="5000" />
+  </div>
+  <details>
+    <summary>Connection profiles (shared by all herdr keys)</summary>
+    <div class="row">
+      <textarea id="profilesJson" spellcheck="false"></textarea>
+    </div>
+    <button id="applyProfiles">Apply profiles</button><span id="profileHint"></span>
+    <p style="color:#a0a0a0; line-height:1.5">
+      kind: local | wsl (+distro) | machine (+machine label) | docker (+container) |
+      ssh (+sshHost) | ssh-docker (+sshHost +container) | custom (+prefix). Optional: herdrBin, timeoutMs.
+    </p>
+  </details>
+<script>
+  var KINDS = ["claude", "codex", "gemini", "cursor", "devin", "agy", "cline", "omp", "mastracode", "opencode",
+               "copilot", "kimi", "kiro", "droid", "amp", "grok", "hermes", "kilo", "qodercli", "qwen",
+               "letta", "maki", "muse", "pi"];
+  (function fillKinds() {
+    var select = document.getElementById("kind");
+    KINDS.forEach(function (k) {
+      var opt = document.createElement("option");
+      opt.value = k; opt.textContent = k;
+      select.appendChild(opt);
+    });
+  })();
+  window.$PI && HerdrPI.init({
+    kind: "kind",
+    newAgentName: "newAgentName",
+    direction: "direction",
+    paneId: "paneId",
+    spawnTimeoutMs: { id: "spawnTimeoutMs", transform: function (v) { return v === "" ? undefined : Number(v); } },
+  });
+</script>
+</body>
+</html>

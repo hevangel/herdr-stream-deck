@@ -1,0 +1,30 @@
+{
+  "name": "herdr-stream-deck",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Stream Deck plugin for controlling herdr - the terminal workspace manager for AI coding agents",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c -w",
+    "icons": "node scripts/gen-plugin-icon.mjs",
+    "validate": "streamdeck validate dev.hevangel.herdr.sdPlugin",
+    "pack": "streamdeck pack -i dev.hevangel.herdr.sdPlugin -o dist"
+  },
+  "dependencies": {
+    "@elgato/streamdeck": "^3.0.3"
+  },
+  "devDependencies": {
+    "@elgato/cli": "^1.10.3",
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.1",
+    "@types/node": "^26.6.5",
+    "rollup": "^4.65.1",
+    "tslib": "^2.8.1",
+    "typescript": "5.9"
+  }
+}

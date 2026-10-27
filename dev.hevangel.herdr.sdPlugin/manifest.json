@@ -1,0 +1,74 @@
+{
+    "$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+    "Name": "dev.hevangel.herdr",
+    "Version": "1.0.0.0",
+    "Author": "hevangel",
+    "Description": "Control herdr - your herd of AI coding agents - from Stream Deck keys: fleet status, prompts, keystrokes and spawning agents, locally, over SSH, or in Docker.",
+    "UUID": "dev.hevangel.herdr",
+    "SDKVersion": 2,
+    "Software": {
+        "MinimumVersion": "6.9"
+    },
+    "CodePath": "bin/plugin.js",
+    "Nodejs": {
+        "Version": "20",
+        "Debug": "enabled"
+    },
+    "Icon": "plugin-icon",
+    "Category": "dev.hevangel.herdr",
+    "CategoryIcon": "imgs/plugin/category",
+    "OS": [
+        {
+            "Platform": "windows",
+            "MinimumVersion": "10"
+        },
+        {
+            "Platform": "mac",
+            "MinimumVersion": "13"
+        }
+    ],
+    "Actions": [
+        {
+            "Name": "Fleet Status",
+            "UUID": "dev.hevangel.herdr.fleet-status",
+            "Icon": "imgs/actions/fleet/icon",
+            "Tooltip": "Live agent state counts for one herdr target. Press to refresh.",
+            "PropertyInspectorPath": "ui/fleet.html",
+            "Controllers": ["Keypad"],
+            "States": [
+                {
+                    "Image": "imgs/actions/fleet/key",
+                    "TitleAlignment": "middle"
+                }
+            ]
+        },
+        {
+            "Name": "Agent Command",
+            "UUID": "dev.hevangel.herdr.agent-command",
+            "Icon": "imgs/actions/agent/icon",
+            "Tooltip": "Send a prompt or keystrokes to one agent. Long-press sends an interrupt.",
+            "PropertyInspectorPath": "ui/agent.html",
+            "Controllers": ["Keypad"],
+            "States": [
+                {
+                    "Image": "imgs/actions/agent/key",
+                    "TitleAlignment": "bottom"
+                }
+            ]
+        },
+        {
+            "Name": "Spawn Agent",
+            "UUID": "dev.hevangel.herdr.spawn-agent",
+            "Icon": "imgs/actions/spawn/icon",
+            "Tooltip": "Split a pane and start a coding agent (claude, codex, ...) in it.",
+            "PropertyInspectorPath": "ui/spawn.html",
+            "Controllers": ["Keypad"],
+            "States": [
+                {
+                    "Image": "imgs/actions/spawn/key",
+                    "TitleAlignment": "middle"
+                }
+            ]
+        }
+    ]
+}

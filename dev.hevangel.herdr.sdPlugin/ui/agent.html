@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>herdr Agent Command</title>
+<style>
+  body { background: #2d2d2d; color: #d8d8d8; font-family: "Segoe UI", sans-serif; font-size: 12px; margin: 0; padding: 8px; }
+  .row { margin-bottom: 10px; }
+  label { display: block; margin-bottom: 3px; color: #a0a0a0; }
+  select, input, textarea { width: 100%; box-sizing: border-box; background: #4d4d4d; color: #f0f0f0; border: 1px solid #5a5a5a; border-radius: 4px; padding: 5px; font-size: 12px; }
+  textarea { height: 70px; font-family: Consolas, monospace; resize: vertical; }
+  button { background: #157efb; color: #fff; border: 0; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 12px; }
+  details { margin-top: 8px; }
+  summary { cursor: pointer; color: #a0a0a0; margin-bottom: 6px; }
+  .check { display: flex; align-items: center; gap: 6px; }
+  .check input { width: auto; }
+  .two { display: flex; gap: 8px; }
+  .two > div { flex: 1; }
+  #profileHint { margin-left: 8px; }
+  code { color: #7ee2a8; }
+</style>
+<script src="pi-common.js"></script>
+<script src="pi-profiles.js"></script>
+</head>
+<body>
+  <div class="row">
+    <label>herdr target (connection profile)</label>
+    <select id="profile"></select>
+  </div>
+  <div class="row">
+    <label>Agent (unique name or pane id; empty = auto-pick the agent needing attention)</label>
+    <input id="agentName" type="text" placeholder="e.g. reviewer or w1:p3" />
+  </div>
+  <div class="row">
+    <label>On tap</label>
+    <select id="mode">
+      <option value="prompt">Send prompt</option>
+      <option value="keys">Send keys</option>
+    </select>
+  </div>
+  <div class="row">
+    <label>Prompt text (prompt mode)</label>
+    <textarea id="promptText" placeholder="Reply with your current status."></textarea>
+  </div>
+  <div class="row check">
+    <input id="useWait" type="checkbox" />
+    <label style="margin:0">Wait for the agent to settle (herdr --wait)</label>
+  </div>
+  <div class="row">
+    <label>Wait timeout (ms)</label>
+    <input id="waitMs" type="number" min="1000" step="1000" />
+  </div>
+  <div class="row">
+    <label>Keys on tap (keys mode), e.g. <code>esc</code>, <code>enter</code>, <code>ctrl+c</code></label>
+    <input id="keyName" type="text" placeholder="enter" />
+  </div>
+  <div class="row">
+    <label>Keys on long-press (hold &ge;600ms; default interrupts)</label>
+    <input id="longPressKeys" type="text" placeholder="ctrl+c" />
+  </div>
+  <div class="row">
+    <label>Poll interval (seconds, 5-3600)</label>
+    <input id="pollInterval" type="number" min="5" max="3600" step="1" />
+  </div>
+  <details>
+    <summary>Connection profiles (shared by all herdr keys)</summary>
+    <div class="row">
+      <textarea id="profilesJson" spellcheck="false"></textarea>
+    </div>
+    <button id="applyProfiles">Apply profiles</button><span id="profileHint"></span>
+    <p style="color:#a0a0a0; line-height:1.5">
+      kind: local | wsl (+distro) | machine (+machine label) | docker (+container) |
+      ssh (+sshHost) | ssh-docker (+sshHost +container) | custom (+prefix). Optional: herdrBin, timeoutMs.
+    </p>
+  </details>
+<script>
+  window.$PI && HerdrPI.init({
+    agentName: "agentName",
+    mode: "mode",
+    promptText: "promptText",
+    useWait: "useWait",
+    waitMs: { id: "waitMs", transform: function (v) { return v === "" ? undefined : Number(v); } },
+    keyName: "keyName",
+    longPressKeys: "longPressKeys",
+    pollInterval: { id: "pollInterval", transform: function (v) { return v === "" ? undefined : Number(v); } },
+  });
+</script>
+</body>
+</html>
