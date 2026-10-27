@@ -1,4 +1,4 @@
-import { KeyAction, KeyDownEvent, SingletonAction } from "@elgato/streamdeck";
+import { action, KeyAction, KeyDownEvent, SingletonAction } from "@elgato/streamdeck";
 import type { ActionSettings } from "../types";
 import { agentStart, paneSplit, resolveProfile } from "../herdr/client";
 import { keySvg, toDataUrl } from "../herdr/render";
@@ -14,6 +14,7 @@ function sanitizeName(raw: string): string {
  * Splits a pane in the target herdr session and starts a coding agent in it.
  * Without an explicit pane, herdr splits the pane focused in its TUI.
  */
+@action({ UUID: "dev.hevangel.herdr.spawn-agent" })
 export class SpawnAgent extends SingletonAction<ActionSettings> {
     override async onKeyDown(ev: KeyDownEvent<ActionSettings>): Promise<void> {
         const action: KeyAction<ActionSettings> = ev.action;

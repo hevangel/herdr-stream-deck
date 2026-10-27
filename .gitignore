@@ -4,3 +4,4 @@ dev.hevangel.herdr.sdPlugin/bin/
 dist/
 *.log
 .mimosa/
+scripts/page-manifest.backup.json

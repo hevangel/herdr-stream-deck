@@ -7,7 +7,7 @@
     "UUID": "dev.hevangel.herdr",
     "SDKVersion": 2,
     "Software": {
-        "MinimumVersion": "6.9"
+        "MinimumVersion": "7.1"
     },
     "CodePath": "bin/plugin.js",
     "Nodejs": {

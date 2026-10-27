@@ -58,10 +58,35 @@ SSH credentials stay owned by OpenSSH; the plugin never passes passwords. The pl
 
 - Errors come as JSON `{"error":{"code","message"}}` (e.g. `server_not_running` when the herdr server is down); usage errors exit 2. `src/herdr/client.ts` surfaces both as `HerdrError` keyed by that code.
 - Agent kinds (from `herdr agent` help): `pi claude codex gemini cursor devin agy cline omp mastracode opencode copilot kimi kiro droid amp grok hermes kilo qodercli qwen letta maki muse`.
-- `herdr agent list` JSON schema is **not yet verified against a live server** (server was not running during development). `normalizeAgent()` accepts the common spellings (`agent_name|name|agentName`, `agent_status|state|status`, `pane_id|paneId|pane`). When you first run against a live server, log one raw response and tighten `normalizeAgent` if needed.
+- `herdr agent list` schema **verified live** (2026-10-27): envelope `{"id":"cli:agent:list","result":{"agents":[…],"type":"agent_list"}}`; per agent the name field is **`agent`** (not `agent_name`), state is `agent_status`, ids are `pane_id` / `tab_id` / `workspace_id`, plus `cwd`, `focused`, `agent_session{…}`. `normalizeAgent` matches this.
 - Agent states: `idle working blocked done unknown`; names match `[a-z][a-z0-9_-]{0,31}`.
 - Never run bare `herdr` (launches the TUI), never `herdr server stop`, never kill the herdr process, don't close panes/tabs/workspaces the plugin didn't create.
 - IDs are opaque (`w1`, `w1:t1`, `w1:p1`) and parse from JSON responses only.
+
+## Live-testing on the real deck (workflow + gotchas)
+
+- `npx streamdeck link` registers the plugin, but a freshly linked plugin only launches after a **full Stream Deck app restart** (quit via tray/CloseMainWindow, relaunch `C:\Program Files\Elgato\StreamDeck\StreamDeck.exe`). Same for any `manifest.json` change; `npx streamdeck restart` alone often doesn't relaunch (can report success while the old process lives — verify via `logs/` mtime + node PID).
+- Crash/launch evidence goes to `dev.hevangel.herdr.sdPlugin/logs/dev.hevangel.herdr.N.log` (rotated per launch; newest by mtime) and `%APPDATA%\Elgato\StreamDeck\logs\StreamDeck.log`.
+- SDK 3.x requires `Software.MinimumVersion: "7.1"` (default settings behavior), the `@action({ UUID })` **standard (TC39) decorator** on every registered action class, and therefore NO `experimentalDecorators` in tsconfig.
+- Stream Deck 7.6 profile store: `%APPDATA%\Elgato\StreamDeck\ProfilesV3\<profile>.sdProfile\manifest.json` (root: Pages.Current) → `Profiles/<page>/manifest.json` → `Controllers[0].Actions` keyed `"row,col"` (5×3). `scripts/inject-demo-keys.cjs` injects test keys (backs up to `scripts/page-manifest.backup.json`); screenshot helpers: `scripts/capture-sd-window.ps1`, `scripts/click-and-capture.ps1`.
+- The plugin is verified running against the live herdr server with real agents (fleet key renders counts/colors; PI seeds and shows "Default: Local"). Screenshots in `docs/screenshots/`, embedded by the root `index.html` user guide.
+
+## Publishing to the Elgato Marketplace (researched 2026-10-27)
+
+Official catalog: marketplace.elgato.com. Submission portal: **Maker Console** (maker.elgato.com). Flow:
+
+1. `npm run validate` then `npm run pack` → `dist/*.streamDeckPlugin` (pack validates too; `.sdignore` excludes files).
+2. Maker Console → create organization + sign the Maker Agreement (Stripe Connect only for paid products; free has no restrictions). Author in manifest must match the Marketplace organization name.
+3. Listing assets: plugin icon PNG 256+512 (have), category icon 28×28 + action icons 20×20 monochrome white SVG (have), 1 thumbnail + ≥3 gallery images (can reuse `docs/screenshots/`), description ≤1500 chars, optional links (website/support/privacy).
+4. Upload → review → publish. Beta/test builds: upload with "Publish after review" unchecked; DRM-processed builds download from the product's Versions tab.
+5. Updates: same flow (never change UUIDs; clone + hide old actions instead).
+
+Guideline gaps to close BEFORE submitting:
+
+- Call `showAlert()` when an action fails (guidelines require it; we only paint the key today).
+- Check the name "herdr" is unique on Marketplace; Author must equal the Maker org name.
+- DRM (optional, default-on for SDKVersion 3 + CLI 1.6+): needs manifest `SDKVersion: 3` + `@elgato/streamdeck` v2+ (have 3.x) + `Software.MinimumVersion` ≥ 6.9 (ours is 7.1) + shipped files immutable (never rewrite plugin files at runtime except SDK-managed `logs/`).
+- Support: Marketplace Makers Discord / maker@elgato.com.
 
 ## Stream Deck specifics (learned the hard way — keep these)
 

@@ -9,7 +9,8 @@ const pkg = { name: "dev.hevangel.herdr", version: "1.0.0" } as const;
 async function seedGlobalSettings(): Promise<void> {
     try {
         const existing = await streamDeck.settings.getGlobalSettings();
-        if (existing && typeof existing === "object" && Array.isArray((existing as { profiles?: unknown }).profiles)) return;
+        const profiles = (existing as { profiles?: unknown })?.profiles;
+        if (Array.isArray(profiles) && profiles.length > 0) return;
         await streamDeck.settings.setGlobalSettings({
             profiles: DEFAULT_PROFILES,
             defaultProfileId: DEFAULT_PROFILES[0].id,

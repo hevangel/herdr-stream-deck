@@ -105,7 +105,8 @@ const KNOWN_STATES: AgentState[] = ["idle", "working", "blocked", "done"];
 function normalizeAgent(obj: Record<string, unknown>): HerdrAgent {
     const stateRaw = (pickString(obj, ["agent_status", "state", "status", "agent_state"]) ?? "unknown").toLowerCase();
     return {
-        name: pickString(obj, ["agent_name", "name", "agentName", "label"]),
+        // Live schema (0.9.4-preview): "agent" holds the unique agent name.
+        name: pickString(obj, ["agent", "agent_name", "name", "agentName", "label"]),
         paneId: pickString(obj, ["pane_id", "paneId", "pane"]),
         kind: pickString(obj, ["agent_kind", "kind", "agentKind", "agent"]),
         state: (KNOWN_STATES as string[]).includes(stateRaw) ? (stateRaw as AgentState) : "unknown",

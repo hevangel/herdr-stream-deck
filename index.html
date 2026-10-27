@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>herdr Stream Deck — User Guide</title>
+<style>
+  :root { color-scheme: dark; }
+  body { background: #0d1117; color: #e6e9ec; font-family: "Segoe UI", system-ui, sans-serif; margin: 0; line-height: 1.6; }
+  main { max-width: 960px; margin: 0 auto; padding: 24px 20px 80px; }
+  h1 { font-size: 2rem; margin: 0.5em 0 0.2em; }
+  h1 .accent { color: #7ee2a8; }
+  h2 { font-size: 1.4rem; margin-top: 2.2em; border-bottom: 1px solid #21262d; padding-bottom: 0.3em; }
+  h3 { font-size: 1.1rem; margin-top: 1.6em; color: #7ee2a8; }
+  p.lead { font-size: 1.05rem; color: #b8bec6; }
+  code { background: #161b22; border: 1px solid #21262d; border-radius: 4px; padding: 1px 6px; font-size: 0.9em; font-family: Consolas, monospace; color: #7ee2a8; }
+  pre { background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 14px 16px; overflow-x: auto; }
+  pre code { background: none; border: 0; padding: 0; color: #e6e9ec; font-size: 0.85em; }
+  figure { margin: 1.2em 0; }
+  figure img { max-width: 100%; border: 1px solid #21262d; border-radius: 8px; }
+  figcaption { color: #8b949e; font-size: 0.9rem; margin-top: 6px; }
+  table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 0.92rem; }
+  th, td { border: 1px solid #21262d; padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #161b22; }
+  .tag { display: inline-block; background: #1c2b22; color: #7ee2a8; border: 1px solid #2d4a38; border-radius: 999px; padding: 1px 10px; font-size: 0.8rem; margin-right: 6px; }
+  .warn { border-left: 3px solid #f5a623; background: #221a0d; padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 1em 0; }
+  .tip { border-left: 3px solid #4c7dff; background: #0d1526; padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 1em 0; }
+  ul { padding-left: 1.4em; }
+  li { margin: 4px 0; }
+</style>
+</head>
+<body>
+<main>
+
+<h1><span class="accent">herdr</span> Stream Deck — User Guide</h1>
+<p class="lead">
+  Drive <a href="https://herdr.dev" style="color:#7ee2a8">herdr</a> — your herd of AI coding agents — from physical
+  Stream Deck keys: watch agent states at a glance, send prompts and keystrokes, interrupt, and spawn new agents.
+  Works with herdr running <strong>locally, in WSL, over SSH on a Linux box, or inside Docker</strong> — local or reached through SSH.
+</p>
+<p>
+  <span class="tag">Fleet Status</span><span class="tag">Agent Command</span><span class="tag">Spawn Agent</span>
+</p>
+
+<figure>
+  <img src="docs/screenshots/02-deck-grid.png" alt="Stream Deck app showing three live herdr keys" />
+  <figcaption>Three herdr keys live in the Stream Deck app: Fleet Status showing <em>2 agents, idle</em> (green),
+  Agent Command (green = its target agent is idle), and Spawn Agent.</figcaption>
+</figure>
+
+<h2>1. Install</h2>
+<p>Requires <strong>Node.js 20+</strong> and the <strong>Elgato Stream Deck app 7.1 or newer</strong> (herdr 0.9.4+ installed wherever the keys will target it).</p>
+<pre><code>git clone https://github.com/hevangel/herdr-stream-deck.git
+cd herdr-stream-deck
+npm install
+npm run build
+npx streamdeck link dev.hevangel.herdr.sdPlugin</code></pre>
+<div class="tip">After linking, restart the Stream Deck app once (quit from the tray and reopen) so it launches the plugin.
+The three actions appear under the <strong>herdr</strong> category — drag them onto any keys.</div>
+
+<h2>2. The three actions</h2>
+
+<h3>Fleet Status — the whole herd on one key</h3>
+<p>Polls <code>herdr agent list</code> every few seconds and shows:</p>
+<ul>
+  <li><strong>Big number</strong> — total live agents, with the worst state named under it.</li>
+  <li><strong>Key color</strong> — urgency: <span style="color:#e5484d">red = blocked</span>,
+      <span style="color:#f5a623">amber = working</span>, <span style="color:#4c7dff">blue = done</span>,
+      <span style="color:#46a758">green = idle</span>, gray = no agents.</li>
+  <li><strong>Tap</strong> — force an immediate refresh.</li>
+</ul>
+
+<h3>Agent Command — talk to one agent</h3>
+<p>Tap sends a prompt (or keystrokes) to a pinned agent. Hold the key for ≥600&nbsp;ms to send the interrupt keys
+(<code>ctrl+c</code> by default). Pin nothing and it auto-targets whoever needs attention: <em>blocked</em> first,
+then <em>working</em>, <em>done</em>, <em>idle</em>. The key shows the target agent's live state color.</p>
+
+<figure>
+  <img src="docs/screenshots/05-agent-pi.png" alt="Agent Command settings panel" />
+  <figcaption>Agent Command settings: target profile, pinned agent (or auto-pick), tap behavior
+  (send prompt / send keys), wait options, and long-press keys.</figcaption>
+</figure>
+
+<h3>Spawn Agent — one key, one new agent</h3>
+<p>Press to split a pane in the target herdr session and start an agent in it
+(<code>herdr pane split</code> → <code>herdr agent start</code>). Configure the agent kind
+(<code>claude</code>, <code>codex</code>, <code>gemini</code>, <code>cursor</code>, <code>droid</code>, …),
+an optional name, and the split direction. Without a pane id, herdr splits the pane currently focused in its TUI.
+The key shows progress (<em>splitting…</em>, <em>starting claude…</em>, <em>started</em>) and flashes on failure.</p>
+
+<h2>3. Connect it to herdr — connection profiles</h2>
+<p>
+  A <strong>connection profile</strong> tells the keys where the herdr CLI runs. Profiles are shared by all herdr keys
+  (stored in Stream Deck's global settings) and edited as JSON in any herdr key's settings panel under
+  <em>Connection profiles</em>:
+</p>
+
+<figure>
+  <img src="docs/screenshots/04-profiles-editor.png" alt="Connection profiles JSON editor in the Property Inspector" />
+  <figcaption>The shared profiles editor. The default install ships one profile: <code>Local</code>.</figcaption>
+</figure>
+
+<table>
+  <tr><th>kind</th><th>Where herdr runs</th><th>Extra fields</th></tr>
+  <tr><td><code>local</code></td><td>This machine (Windows herdr is beta)</td><td>—</td></tr>
+  <tr><td><code>wsl</code></td><td>Inside a WSL distro</td><td><code>distro</code> (omit for default)</td></tr>
+  <tr><td><code>machine</code></td><td>A saved herdr SSH machine — native forwarding</td><td><code>machine</code> label from <code>herdr machine list --json</code></td></tr>
+  <tr><td><code>docker</code></td><td>Inside a local container</td><td><code>container</code></td></tr>
+  <tr><td><code>ssh</code></td><td>A remote Linux host</td><td><code>sshHost</code> (<code>you@vps</code> or ssh-config alias)</td></tr>
+  <tr><td><code>ssh-docker</code></td><td>A container on a remote host</td><td><code>sshHost</code> + <code>container</code></td></tr>
+  <tr><td><code>custom</code></td><td>Any wrapper command</td><td><code>prefix</code> (e.g. <code>toolbox exec</code>)</td></tr>
+</table>
+
+<h3>Example profiles</h3>
+<pre><code>{
+  "profiles": [
+    { "id": "local",  "name": "Local",    "kind": "local" },
+    { "id": "wsl",    "name": "WSL",      "kind": "wsl", "distro": "Ubuntu" },
+    { "id": "gpu",    "name": "GPU box",  "kind": "machine", "machine": "gpu-box" },
+    { "id": "vps",    "name": "VPS",      "kind": "ssh", "sshHost": "you@vps.example.com" },
+    { "id": "vpsd",   "name": "VPS dock", "kind": "ssh-docker", "sshHost": "you@vps.example.com", "container": "herdr" },
+    { "id": "dock",   "name": "Docker",   "kind": "docker", "container": "herdr" }
+  ],
+  "defaultProfileId": "local"
+}</code></pre>
+<p>
+  Each key picks its profile from the <em>herdr target</em> dropdown (or inherits the default). Optional per-profile
+  fields: <code>herdrBin</code> (binary path as seen by the target — useful in containers) and
+  <code>timeoutMs</code>. SSH keys stay owned by OpenSSH; the plugin never handles passwords. For
+  <code>machine</code> targets, first run <code>herdr machine add &lt;ssh-target&gt;</code> once in a terminal.
+</p>
+<div class="warn">Remote targets must already run a compatible herdr server. <code>machine</code> profiles need
+machine-API forwarding on both ends; <code>ssh</code>/<code>ssh-docker</code> just need the <code>herdr</code> binary
+on the remote PATH (or set <code>herdrBin</code>).</div>
+
+<h2>4. Per-key settings</h2>
+<p>Every key has a Property Inspector (select the key in the Stream Deck app):</p>
+<ul>
+  <li><strong>Fleet Status</strong> — target profile, poll interval (5–3600 s).</li>
+  <li><strong>Agent Command</strong> — target profile, pinned agent (name or pane id), tap mode
+      (<em>send prompt</em> / <em>send keys</em>), prompt text, wait-for-settle + timeout, long-press keys.</li>
+  <li><strong>Spawn Agent</strong> — target profile, agent kind, name, split direction, pane id, start timeout.</li>
+</ul>
+<p>Settings save automatically when you edit them.</p>
+
+<figure>
+  <img src="docs/screenshots/03-fleet-pi.png" alt="Fleet Status settings panel" />
+  <figcaption>Fleet Status settings with the live key preview.</figcaption>
+</figure>
+
+<h2>5. Troubleshooting</h2>
+<table>
+  <tr><th>Key shows</th><th>Meaning / fix</th></tr>
+  <tr><td><code>herdr not running</code></td><td>The target's herdr server is down — run <code>herdr</code> there once (or start <code>herdr server</code> headless).</td></tr>
+  <tr><td><code>no profile</code></td><td>No connection profile selected — open the key's settings and pick one under <em>herdr target</em>.</td></tr>
+  <tr><td><code>timeout</code></td><td>The target didn't answer in time — remote boxes may need a larger <code>timeoutMs</code> in the profile.</td></tr>
+  <tr><td><code>spawn failed</code></td><td><code>ssh</code>/<code>docker</code>/<code>wsl</code> couldn't start — check the binary exists and the host/container name is right.</td></tr>
+  <tr><td><code>err &lt;code&gt;</code></td><td>herdr reported an error — details in the plugin log (below).</td></tr>
+</table>
+<p>Logs live in <code>dev.hevangel.herdr.sdPlugin/logs/</code> inside the plugin folder. After editing plugin files:
+<code>npm run build</code>, then restart the Stream Deck app.</p>
+
+<h2>6. Uninstall / remove the demo keys</h2>
+<p>Right-click any herdr key in the Stream Deck app to remove it. To unlink the plugin entirely:
+<code>npx streamdeck unlink dev.hevangel.herdr</code>.</p>
+
+<p style="color:#8b949e; margin-top:3em">MIT licensed — <a href="https://github.com/hevangel/herdr-stream-deck" style="color:#7ee2a8">github.com/hevangel/herdr-stream-deck</a></p>
+
+</main>
+</body>
+</html>

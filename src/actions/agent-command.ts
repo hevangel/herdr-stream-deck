@@ -1,4 +1,4 @@
-import { KeyAction, KeyDownEvent, KeyUpEvent } from "@elgato/streamdeck";
+import { action, KeyAction, KeyDownEvent, KeyUpEvent } from "@elgato/streamdeck";
 import type { ActionSettings, HerdrProfile } from "../types";
 import { agentList, agentPrompt, agentSendKeys, resolveAgentTarget, resolveProfile } from "../herdr/client";
 import { keySvg, STATE_COLORS, toDataUrl } from "../herdr/render";
@@ -12,6 +12,7 @@ const LONG_PRESS_MS = 600;
  * interrupt. With no agent configured, targets the agent needing attention
  * (blocked first, then working, done, idle).
  */
+@action({ UUID: "dev.hevangel.herdr.agent-command" })
 export class AgentCommand extends PollingAction {
     private keyDownAt = new Map<string, number>();
 

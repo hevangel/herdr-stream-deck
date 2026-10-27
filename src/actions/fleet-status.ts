@@ -1,4 +1,4 @@
-import { KeyAction, KeyDownEvent } from "@elgato/streamdeck";
+import { action, KeyAction, KeyDownEvent } from "@elgato/streamdeck";
 import type { ActionSettings, AgentState, HerdrProfile } from "../types";
 import { agentList, resolveProfile } from "../herdr/client";
 import { keySvg, toDataUrl, worstState } from "../herdr/render";
@@ -14,6 +14,7 @@ function emptyCounts(): Counts {
  * Shows live agent-state counts for one herdr target. The key turns the color
  * of the most urgent state (blocked > working > done > idle). Press to refresh.
  */
+@action({ UUID: "dev.hevangel.herdr.fleet-status" })
 export class FleetStatus extends PollingAction {
     override async onKeyDown(ev: KeyDownEvent<ActionSettings>): Promise<void> {
         try {

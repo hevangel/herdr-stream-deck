@@ -19,6 +19,15 @@
         return bits.join(" · ");
     }
 
+    /** Mirror the plugin's normalizeGlobalSettings fallback so an empty store reads as Local. */
+    function normalized(global) {
+        var profiles = global && Array.isArray(global.profiles) && global.profiles.length > 0 ? global.profiles : [{ id: "local", name: "Local", kind: "local" }];
+        return {
+            profiles: profiles,
+            defaultProfileId: (global && global.defaultProfileId) || profiles[0].id,
+        };
+    }
+
     function fillProfileSelect(select, global, settings) {
         var profiles = (global && global.profiles) || [];
         var current = (settings && settings.profileId) || "";
@@ -67,7 +76,7 @@
             });
 
             function renderEditor() {
-                var global = window.$PI.globalSettings();
+                var global = normalized(window.$PI.globalSettings());
                 var settings = window.$PI.settings();
                 if (select) fillProfileSelect(select, global, settings);
                 var area = el("profilesJson");
