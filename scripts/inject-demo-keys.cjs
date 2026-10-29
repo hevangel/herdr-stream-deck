@@ -91,5 +91,36 @@ const entries = {
 };
 
 Object.assign(keypad.Actions, entries);
+
+// Optional Agent Focus key at (4,0), pinned to a pane: AGENT_FOCUS_PANE=w9:p1 node inject-demo-keys.cjs
+const focusPane = process.env.AGENT_FOCUS_PANE;
+if (focusPane) {
+    keypad.Actions["4,0"] = {
+        ActionID: "a1e2b100-0000-4000-8000-herdfocus0004",
+        LinkedTitle: true,
+        Name: "Agent Focus",
+        Plugin: { Name: "herdr", UUID: "dev.hevangel.herdr", Version: "1.0" },
+        Resources: null,
+        Settings: { agentName: focusPane },
+        State: 0,
+        States: [
+            {
+                FontFamily: "",
+                FontSize: 12,
+                FontStyle: "",
+                FontUnderline: false,
+                Image: "",
+                OutlineThickness: 2,
+                ShowTitle: true,
+                Title: "focus",
+                TitleAlignment: "middle",
+                TitleColor: "#ffffff",
+            },
+        ],
+        UUID: "dev.hevangel.herdr.agent-focus",
+    };
+    console.log("focus key at 4,0 ->", focusPane);
+}
+
 fs.writeFileSync(file, JSON.stringify(pm, null, "\t"));
 console.log("injected:", Object.keys(entries).join(", "), "at page", page);

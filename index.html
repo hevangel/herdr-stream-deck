@@ -39,13 +39,13 @@
   Works with herdr running <strong>locally, in WSL, over SSH on a Linux box, or inside Docker</strong> — local or reached through SSH.
 </p>
 <p>
-  <span class="tag">Fleet Status</span><span class="tag">Agent Command</span><span class="tag">Spawn Agent</span>
+  <span class="tag">Fleet Status</span><span class="tag">Agent Command</span><span class="tag">Agent Focus</span><span class="tag">Spawn Agent</span>
 </p>
 
 <figure>
-  <img src="docs/screenshots/02-deck-grid.png" alt="Stream Deck app showing three live herdr keys" />
-  <figcaption>Three herdr keys live in the Stream Deck app: Fleet Status showing <em>2 agents, idle</em> (green),
-  Agent Command (green = its target agent is idle), and Spawn Agent.</figcaption>
+  <img src="docs/screenshots/06-grid-with-icons.png" alt="Stream Deck app showing four live herdr keys with agent kind icons" />
+  <figcaption>Four herdr keys live in the Stream Deck app: Fleet Status (counts + urgency color), Agent Focus and
+  Agent Command wearing the <strong>opencode "OC" agent-kind icon</strong>, and Spawn Agent.</figcaption>
 </figure>
 
 <h2>1. Install</h2>
@@ -79,6 +79,18 @@ then <em>working</em>, <em>done</em>, <em>idle</em>. The key shows the target ag
   <img src="docs/screenshots/05-agent-pi.png" alt="Agent Command settings panel" />
   <figcaption>Agent Command settings: target profile, pinned agent (or auto-pick), tap behavior
   (send prompt / send keys), wait options, and long-press keys.</figcaption>
+</figure>
+
+<h3>Agent Focus — one key per agent, press to jump</h3>
+<p>
+  Pins <strong>one agent</strong> (by unique name or pane id — the ones you see in herdr's agent panel). The key shows
+  the agent's <strong>kind icon</strong>, its name and live state color. Pressing it runs <code>herdr agent focus</code>:
+  herdr switches to the tab hosting that agent and marks it seen. Add one key per agent you flip between.
+</p>
+<figure>
+  <img src="docs/screenshots/08-agent-working.png" alt="herdr keys turned amber while the agent is working" />
+  <figcaption>Live states: the agent started working and all polling keys turned <span style="color:#f5a623">amber</span>
+  ("1 working") — they return green when it settles idle again.</figcaption>
 </figure>
 
 <h3>Spawn Agent — one key, one new agent</h3>
@@ -139,6 +151,7 @@ on the remote PATH (or set <code>herdrBin</code>).</div>
   <li><strong>Fleet Status</strong> — target profile, poll interval (5–3600 s).</li>
   <li><strong>Agent Command</strong> — target profile, pinned agent (name or pane id), tap mode
       (<em>send prompt</em> / <em>send keys</em>), prompt text, wait-for-settle + timeout, long-press keys.</li>
+  <li><strong>Agent Focus</strong> — target profile, pinned agent (name or pane id), poll interval.</li>
   <li><strong>Spawn Agent</strong> — target profile, agent kind, name, split direction, pane id, start timeout.</li>
 </ul>
 <p>Settings save automatically when you edit them.</p>

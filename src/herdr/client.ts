@@ -215,6 +215,11 @@ export async function agentSendKeys(profile: HerdrProfile, target: string, keys:
     await expectJson(profile, ["agent", "send-keys", target, ...keys], profile.timeoutMs ?? DEFAULT_TIMEOUT_MS);
 }
 
+/** Focus the tab/pane hosting the target agent in the herdr TUI (also marks it seen). */
+export async function agentFocus(profile: HerdrProfile, target: string): Promise<void> {
+    await expectJson(profile, ["agent", "focus", target], profile.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+}
+
 export async function agentGet(profile: HerdrProfile, target: string): Promise<HerdrAgent> {
     const json = await expectJson(profile, ["agent", "get", target], profile.timeoutMs ?? DEFAULT_TIMEOUT_MS);
     return normalizeAgent(json);

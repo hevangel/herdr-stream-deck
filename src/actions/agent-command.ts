@@ -1,7 +1,7 @@
 import { action, KeyAction, KeyDownEvent, KeyUpEvent } from "@elgato/streamdeck";
 import type { ActionSettings, HerdrProfile } from "../types";
 import { agentList, agentPrompt, agentSendKeys, resolveAgentTarget, resolveProfile } from "../herdr/client";
-import { keySvg, STATE_COLORS, toDataUrl } from "../herdr/render";
+import { agentKeySvg, STATE_COLORS, toDataUrl } from "../herdr/render";
 import { PollingAction, loadGlobalSettings } from "./base";
 
 const LONG_PRESS_MS = 600;
@@ -35,12 +35,14 @@ export class AgentCommand extends PollingAction {
         const agents = await agentList(profile);
         const target = resolveAgentTarget(settings, agents);
         if (!target) {
-            await action.setImage(toDataUrl(keySvg({ bg: "#3a3f45", sub: "no agents" })));
+            await action.setImage(toDataUrl(agentKeySvg({ bg: "#3a3f45", kind: null, sub: "no agents" })));
             await action.setTitle("no agents");
             return;
         }
         const agent = agents.find((a) => a.name === target || a.paneId === target);
-        await action.setImage(toDataUrl(keySvg({ bg: STATE_COLORS[agent?.state ?? "unknown"] })));
+        await action.setImage(
+            toDataUrl(agentKeySvg({ bg: STATE_COLORS[agent?.state ?? "unknown"], kind: agent?.kind, sub: agent?.name ?? target })),
+        );
         await action.setTitle(this.displayName(settings.agentName, agent?.name, agent?.kind));
     }
 
@@ -55,26 +57,27 @@ export class AgentCommand extends PollingAction {
                 await action.setTitle("no agents");
                 return;
             }
+            const agent = agents.find((a) => a.name === target || a.paneId === target);
 
             if (longPress) {
                 const keys = (settings.longPressKeys || "ctrl+c").trim().split(/\s+/);
                 await agentSendKeys(profile, target, keys);
-                await this.flash(action, "sent", "#2b6cb0", settings, profile);
+                await this.flash(action, "sent", "#2b6cb0", agent?.kind, settings, profile);
                 return;
             }
             if ((settings.mode ?? "prompt") === "keys") {
                 const key = settings.keyName?.trim() || "enter";
                 await agentSendKeys(profile, target, [key]);
-                await this.flash(action, key, "#2b6cb0", settings, profile);
+                await this.flash(action, key, "#2b6cb0", agent?.kind, settings, profile);
                 return;
             }
             const text = settings.promptText?.trim();
             if (!text) {
-                await this.flash(action, "no text", "#6e7681", settings, profile);
+                await this.flash(action, "no text", "#6e7681", agent?.kind, settings, profile);
                 return;
             }
             await agentPrompt(profile, target, text, settings.useWait ?? false, settings.waitMs ?? 120000);
-            await this.flash(action, "sent", "#46a758", settings, profile);
+            await this.flash(action, "sent", "#46a758", agent?.kind, settings, profile);
         } catch (e) {
             await this.onError(action, e instanceof Error ? e : new Error(String(e)));
         }
@@ -85,10 +88,11 @@ export class AgentCommand extends PollingAction {
         action: KeyAction<ActionSettings>,
         text: string,
         color: string,
+        kind: string | null | undefined,
         settings: ActionSettings,
         profile: HerdrProfile,
     ): Promise<void> {
-        await action.setImage(toDataUrl(keySvg({ bg: color, sub: text })));
+        await action.setImage(toDataUrl(agentKeySvg({ bg: color, kind, sub: text })));
         await new Promise((resolve) => setTimeout(resolve, 1500));
         try {
             await this.refresh(action, settings, profile);

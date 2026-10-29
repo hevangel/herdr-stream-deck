@@ -1,7 +1,7 @@
 import { action, KeyAction, KeyDownEvent, SingletonAction } from "@elgato/streamdeck";
 import type { ActionSettings } from "../types";
 import { agentStart, paneSplit, resolveProfile } from "../herdr/client";
-import { keySvg, toDataUrl } from "../herdr/render";
+import { agentKeySvg, keySvg, toDataUrl } from "../herdr/render";
 import { loadGlobalSettings } from "./base";
 
 /** Sanitize to herdr's agent name rule: [a-z][a-z0-9_-]{0,31}. */
@@ -12,7 +12,8 @@ function sanitizeName(raw: string): string {
 
 /**
  * Splits a pane in the target herdr session and starts a coding agent in it.
- * Without an explicit pane, herdr splits the pane focused in its TUI.
+ * Without an explicit pane, herdr splits the pane focused in its TUI. The key
+ * wears the target agent kind's icon.
  */
 @action({ UUID: "dev.hevangel.herdr.spawn-agent" })
 export class SpawnAgent extends SingletonAction<ActionSettings> {
@@ -29,24 +30,26 @@ export class SpawnAgent extends SingletonAction<ActionSettings> {
             await action.setImage(toDataUrl(keySvg({ bg: "#f5a623", sub: "splitting…" })));
             const paneId = await paneSplit(profile, settings.direction ?? "right", settings.paneId?.trim() || undefined, undefined);
 
-            await action.setImage(toDataUrl(keySvg({ bg: "#f5a623", sub: `starting ${kind}…` })));
+            await action.setImage(toDataUrl(agentKeySvg({ bg: "#f5a623", kind, sub: `starting ${kind}…` })));
             try {
                 await agentStart(profile, name, kind, paneId, timeoutMs);
             } catch (e) {
                 if ((e as { code?: string }).code === "agent_not_ready") {
                     // The agent process is still starting; herdr keeps the name reserved.
-                    await action.setImage(toDataUrl(keySvg({ bg: "#4c7dff", sub: "slow start" })));
+                    await action.setImage(toDataUrl(agentKeySvg({ bg: "#4c7dff", kind, sub: "slow start" })));
                     await action.setTitle(`${name}\n(not ready yet)`);
                     return;
                 }
                 throw e;
             }
-            await action.setImage(toDataUrl(keySvg({ bg: "#46a758", sub: "started" })));
+            await action.setImage(toDataUrl(agentKeySvg({ bg: "#46a758", kind, sub: "started" })));
             await action.setTitle(name);
         } catch (e) {
             const message = e instanceof Error ? e.message : String(e);
             await action.setImage(undefined);
             await action.setTitle(`fail\n${message.slice(0, 24)}`);
+            // Marketplace guideline: surface failures via the standard alert.
+            await action.showAlert().catch(() => {});
         } finally {
             setTimeout(() => void action.setImage(undefined), 4000);
         }

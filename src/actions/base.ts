@@ -96,6 +96,8 @@ export abstract class PollingAction extends SingletonAction<ActionSettings> {
         try {
             await action.setImage(undefined);
             await action.setTitle(short[code] ?? `err\n${code}`);
+            // Marketplace guideline: surface failures via the standard alert.
+            await action.showAlert();
         } catch {
             // Key went away mid-update; the poll loop stops on disappear.
         }

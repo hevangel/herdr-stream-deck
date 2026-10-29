@@ -57,6 +57,20 @@
             ]
         },
         {
+            "Name": "Agent Focus",
+            "UUID": "dev.hevangel.herdr.agent-focus",
+            "Icon": "imgs/actions/focus/icon",
+            "Tooltip": "One agent per key: shows its kind icon and live state; press to focus the herdr tab hosting it.",
+            "PropertyInspectorPath": "ui/focus.html",
+            "Controllers": ["Keypad"],
+            "States": [
+                {
+                    "Image": "imgs/actions/focus/key",
+                    "TitleAlignment": "middle"
+                }
+            ]
+        },
+        {
             "Name": "Spawn Agent",
             "UUID": "dev.hevangel.herdr.spawn-agent",
             "Icon": "imgs/actions/spawn/icon",

@@ -1,5 +1,6 @@
 import streamDeck from "@elgato/streamdeck";
 import { AgentCommand } from "./actions/agent-command";
+import { AgentFocus } from "./actions/agent-focus";
 import { FleetStatus } from "./actions/fleet-status";
 import { SpawnAgent } from "./actions/spawn-agent";
 import { DEFAULT_PROFILES } from "./herdr/profiles";
@@ -22,6 +23,7 @@ async function seedGlobalSettings(): Promise<void> {
 
 streamDeck.actions.registerAction(new FleetStatus());
 streamDeck.actions.registerAction(new AgentCommand());
+streamDeck.actions.registerAction(new AgentFocus());
 streamDeck.actions.registerAction(new SpawnAgent());
 
 streamDeck
