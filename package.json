@@ -12,7 +12,7 @@
     "watch": "rollup -c -w",
     "icons": "node scripts/gen-plugin-icon.mjs",
     "validate": "streamdeck validate dev.hevangel.herdr.sdPlugin",
-    "pack": "streamdeck pack -i dev.hevangel.herdr.sdPlugin -o dist"
+    "pack": "streamdeck pack dev.hevangel.herdr.sdPlugin -o dist -f"
   },
   "dependencies": {
     "@elgato/streamdeck": "^3.0.3"
