@@ -2,10 +2,16 @@ import type { GlobalSettings, HerdrProfile } from "../types";
 
 export const DEFAULT_PROFILES: HerdrProfile[] = [{ id: "local", name: "Local", kind: "local" }];
 
+export const DEFAULT_AGENT_KIND = "codex";
+
 export function normalizeGlobalSettings(raw: unknown): GlobalSettings {
     const g = (raw ?? {}) as GlobalSettings;
     const profiles = Array.isArray(g.profiles) && g.profiles.length > 0 ? g.profiles : DEFAULT_PROFILES;
-    return { profiles, defaultProfileId: g.defaultProfileId ?? profiles[0]?.id };
+    return {
+        profiles,
+        defaultProfileId: g.defaultProfileId ?? profiles[0]?.id,
+        defaultAgentKind: typeof g.defaultAgentKind === "string" && g.defaultAgentKind.trim() ? g.defaultAgentKind.trim() : DEFAULT_AGENT_KIND,
+    };
 }
 
 export function findProfile(globalSettings: GlobalSettings, profileId?: string): HerdrProfile | undefined {

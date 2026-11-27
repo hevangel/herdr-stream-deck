@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>herdr View Mode</title>
+<style>
+  body { background: #2d2d2d; color: #d8d8d8; font-family: "Segoe UI", sans-serif; font-size: 12px; margin: 0; padding: 8px; }
+  .row { margin-bottom: 10px; }
+  label { display: block; margin-bottom: 3px; color: #a0a0a0; }
+  select, textarea { width: 100%; box-sizing: border-box; background: #4d4d4d; color: #f0f0f0; border: 1px solid #5a5a5a; border-radius: 4px; padding: 5px; font-size: 12px; }
+  textarea { height: 190px; font-family: Consolas, monospace; }
+  button { background: #157efb; color: #fff; border: 0; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 12px; }
+  details { margin-top: 8px; }
+  summary { cursor: pointer; color: #a0a0a0; margin-bottom: 6px; }
+  #profileHint { margin-left: 8px; }
+</style>
+<script src="pi-common.js"></script>
+<script src="pi-profiles.js"></script>
+</head>
+<body>
+  <div class="row">
+    <label>Default agent (long-press '+' to start immediately)</label>
+    <select id="defaultAgentKind"></select>
+  </div>
+  <div class="row">
+    <label>Default herdr target (used when Local machine is selected)</label>
+    <select id="profile"></select>
+  </div>
+  <p style="color:#a0a0a0; line-height:1.5">
+    Switches the top two rows of <strong>Deck Slot</strong> keys to this view
+    (Agents, Machines, Windows, or Tabs).
+  </p>
+  <details>
+    <summary>Connection profiles (shared by all herdr keys)</summary>
+    <div class="row">
+      <textarea id="profilesJson" spellcheck="false"></textarea>
+    </div>
+    <button id="applyProfiles">Apply profiles</button><span id="profileHint"></span>
+  </details>
+<script>
+  window.$PI && HerdrPI.init({});
+</script>
+</body>
+</html>

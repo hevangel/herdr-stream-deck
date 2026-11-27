@@ -83,6 +83,76 @@
                     "TitleAlignment": "middle"
                 }
             ]
+        },
+        {
+            "Name": "Deck Slot",
+            "UUID": "dev.hevangel.herdr.deck-slot",
+            "Icon": "imgs/actions/deck/slot-icon",
+            "Tooltip": "Dynamic top-row slot (0-9): displays Agents, Machines, Windows, or Tabs based on the active mode.",
+            "PropertyInspectorPath": "ui/deck-slot.html",
+            "Controllers": ["Keypad"],
+            "States": [
+                {
+                    "Image": "imgs/actions/deck/slot-key",
+                    "TitleAlignment": "middle"
+                }
+            ]
+        },
+        {
+            "Name": "List Agents",
+            "UUID": "dev.hevangel.herdr.mode-agents",
+            "Icon": "imgs/actions/deck/mode-icon",
+            "Tooltip": "Switch top-row Deck Slots to list live agents (default view).",
+            "PropertyInspectorPath": "ui/deck-mode.html",
+            "Controllers": ["Keypad"],
+            "States": [
+                {
+                    "Image": "imgs/actions/deck/mode-key",
+                    "TitleAlignment": "middle"
+                }
+            ]
+        },
+        {
+            "Name": "List Machines",
+            "UUID": "dev.hevangel.herdr.mode-machines",
+            "Icon": "imgs/actions/deck/mode-icon",
+            "Tooltip": "Switch top-row Deck Slots to list machines; press a machine to open its Windows view.",
+            "PropertyInspectorPath": "ui/deck-mode.html",
+            "Controllers": ["Keypad"],
+            "States": [
+                {
+                    "Image": "imgs/actions/deck/mode-key",
+                    "TitleAlignment": "middle"
+                }
+            ]
+        },
+        {
+            "Name": "List Windows",
+            "UUID": "dev.hevangel.herdr.mode-windows",
+            "Icon": "imgs/actions/deck/mode-icon",
+            "Tooltip": "Switch top-row Deck Slots to list windows (workspaces) of the active machine.",
+            "PropertyInspectorPath": "ui/deck-mode.html",
+            "Controllers": ["Keypad"],
+            "States": [
+                {
+                    "Image": "imgs/actions/deck/mode-key",
+                    "TitleAlignment": "middle"
+                }
+            ]
+        },
+        {
+            "Name": "List Tabs",
+            "UUID": "dev.hevangel.herdr.mode-tabs",
+            "Icon": "imgs/actions/deck/mode-icon",
+            "Tooltip": "Switch top-row Deck Slots to list tabs of the focused window.",
+            "PropertyInspectorPath": "ui/deck-mode.html",
+            "Controllers": ["Keypad"],
+            "States": [
+                {
+                    "Image": "imgs/actions/deck/mode-key",
+                    "TitleAlignment": "middle"
+                }
+            ]
         }
     ]
 }

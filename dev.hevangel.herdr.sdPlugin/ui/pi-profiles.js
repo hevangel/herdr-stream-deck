@@ -4,6 +4,22 @@
     "use strict";
 
     var KINDS = ["local", "wsl", "machine", "docker", "ssh", "ssh-docker", "custom"];
+    var AGENT_KINDS = [
+        "codex",
+        "claude",
+        "agy",
+        "cursor",
+        "zcode",
+        "opencode",
+        "hermes",
+        "kiro",
+        "kilo",
+        "copilot",
+        "cline",
+        "droid",
+        "pi",
+        "letta",
+    ];
 
     function el(id) {
         return document.getElementById(id);
@@ -25,7 +41,22 @@
         return {
             profiles: profiles,
             defaultProfileId: (global && global.defaultProfileId) || profiles[0].id,
+            defaultAgentKind: (global && global.defaultAgentKind) || "codex",
         };
+    }
+
+    function fillDefaultAgentSelect(select, global) {
+        var current = (global && global.defaultAgentKind) || "codex";
+        select.innerHTML = "";
+        var list = AGENT_KINDS.slice();
+        if (list.indexOf(current) === -1) list.push(current);
+        list.forEach(function (kind) {
+            var opt = document.createElement("option");
+            opt.value = kind;
+            opt.textContent = kind;
+            if (kind === current) opt.selected = true;
+            select.appendChild(opt);
+        });
     }
 
     function fillProfileSelect(select, global, settings) {
@@ -54,6 +85,7 @@
          */
         init: function (fieldBind) {
             var select = el("profile");
+            var defaultAgentSelect = el("defaultAgentKind");
 
             function bindField(key, id, transform) {
                 var node = el(id);
@@ -79,6 +111,7 @@
                 var global = normalized(window.$PI.globalSettings());
                 var settings = window.$PI.settings();
                 if (select) fillProfileSelect(select, global, settings);
+                if (defaultAgentSelect) fillDefaultAgentSelect(defaultAgentSelect, global);
                 var area = el("profilesJson");
                 if (area && document.activeElement !== area) {
                     area.value = JSON.stringify(
@@ -96,6 +129,13 @@
                     window.$PI.patchSettings({ profileId: select.value || undefined });
                 });
 
+            defaultAgentSelect &&
+                defaultAgentSelect.addEventListener("change", function () {
+                    var current = normalized(window.$PI.globalSettings());
+                    current.defaultAgentKind = defaultAgentSelect.value || "codex";
+                    window.$PI.setGlobalSettings(current);
+                });
+
             var applyBtn = el("applyProfiles");
             applyBtn &&
                 applyBtn.addEventListener("click", function () {
@@ -109,6 +149,8 @@
                             }
                         });
                         if (!parsed.defaultProfileId) parsed.defaultProfileId = parsed.profiles[0].id;
+                        var current = normalized(window.$PI.globalSettings());
+                        parsed.defaultAgentKind = parsed.defaultAgentKind || current.defaultAgentKind || "codex";
                         window.$PI.setGlobalSettings(parsed);
                         if (hint) {
                             hint.textContent = "Saved " + parsed.profiles.length + " profile(s).";

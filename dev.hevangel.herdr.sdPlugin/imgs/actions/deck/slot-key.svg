@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+  <rect width="72" height="72" rx="12" fill="#1c2128"/>
+  <rect x="17" y="14" width="38" height="32" rx="7" fill="none" stroke="#7ee2a8" stroke-width="2.5"/>
+  <text x="36" y="60" font-family="Segoe UI, Arial, sans-serif" font-weight="700" font-size="11" fill="#e6e9ec" text-anchor="middle">SLOT</text>
+</svg>

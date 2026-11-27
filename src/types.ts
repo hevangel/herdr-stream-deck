@@ -33,6 +33,8 @@ export interface HerdrProfile extends JsonObject {
 export interface GlobalSettings extends JsonObject {
     profiles?: HerdrProfile[];
     defaultProfileId?: string;
+    /** Default coding agent kind started on long-press of the '+' Deck Slot (default: "codex"). */
+    defaultAgentKind?: string;
 }
 
 export interface ActionSettings extends JsonObject {
@@ -64,15 +66,53 @@ export interface ActionSettings extends JsonObject {
     paneId?: string;
     /** herdr agent start --timeout, ms (default 60000). */
     spawnTimeoutMs?: number;
+    // --- deck slot action ---
+    /** optional 0-based slot override (0-9); empty = auto from key coordinates (row * 5 + col). */
+    slotIndex?: number;
 }
 
 export type AgentState = "idle" | "working" | "blocked" | "done" | "unknown";
+
+export type DeckViewMode = "agents" | "machines" | "windows" | "tabs" | "pick-agent";
 
 export interface HerdrAgent {
     /** unique live agent name, if the agent has one. */
     name: string | null;
     paneId: string | null;
+    workspaceId: string | null;
+    tabId: string | null;
     kind: string | null;
     state: AgentState;
+    focused: boolean;
     raw: Record<string, unknown>;
+}
+
+export interface HerdrMachine {
+    id: string;
+    label: string;
+    target: string;
+    session: string;
+    enabled: boolean;
+    selected: boolean;
+}
+
+export interface HerdrWorkspace {
+    workspaceId: string;
+    label: string;
+    number: number;
+    focused: boolean;
+    activeTabId: string | null;
+    agentStatus: AgentState;
+    tabCount: number;
+    paneCount: number;
+}
+
+export interface HerdrTab {
+    tabId: string;
+    workspaceId: string;
+    label: string;
+    number: number;
+    focused: boolean;
+    agentStatus: AgentState;
+    paneCount: number;
 }

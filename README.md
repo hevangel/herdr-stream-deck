@@ -2,13 +2,23 @@
 
 Control [herdr](https://herdr.dev) — your herd of AI coding agents — from Elgato Stream Deck keys. Works with herdr running locally, in WSL, on a remote Linux box over SSH, or inside a Docker container (local or reached over SSH).
 
-![license MIT](https://img.shields.io/badge/license-MIT-blue)
+## Screenshots
+
+| Live Agents View (Local + Remote Machines) | New Agent Picker (`+` Button) |
+|---|---|
+| ![5x3 Stream Deck showing live agents across Local, brunhild, and hyperion](docs/screenshots/deck-agents.png) | ![Agent picker showing codex, claude, agy, cursor, zcode, opencode, hermes, kiro, and kilo icons](docs/screenshots/deck-agent-picker.png) |
 
 ## Actions
 
+### Dynamic 5×3 Deck View
+- **Deck Slot** — place up to 10 slots on the top two rows; they dynamically display live agents (across Local + all enabled SSH machines), machines, windows (workspaces), or tabs depending on the active bottom-row mode. In Agents view, the first empty slot shows **`+`** (tap to pick a coding agent; long-press to start your default agent in a new tab).
+- **List Agents / List Machines / List Windows / List Tabs** — bottom-row mode buttons with live counts and active machine/window labels.
+
+### Standalone Keys
 - **Fleet Status** — live counts of agents by state (blocked / working / done / idle). The key colors by the most urgent state; press to refresh.
 - **Agent Command** — tap sends a prompt (or keystrokes) to an agent; long-press (≥600 ms) sends an interrupt (`ctrl+c` by default). With no agent pinned, it auto-targets the agent that needs attention — blocked first.
-- **Spawn Agent** — splits a pane in herdr and starts a coding agent in it (`claude`, `codex`, `gemini`, `cursor`, `droid`, …).
+- **Agent Focus** — pins a single agent by name or pane ID and focuses its tab on press.
+- **Spawn Agent** — splits a pane in herdr and starts a coding agent in it (`claude`, `codex`, `cursor`, `agy`, …).
 
 ## Install (development)
 
